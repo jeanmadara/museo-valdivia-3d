@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sala de Arte 3D – Herencia Ancestral</title>
+    <meta name="description" content="Recorrido virtual inmersivo por la sala de arte cultural ecuatoriana." />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+<body>
+
+  <!-- ── Pantalla de carga ──────────────────────────── -->
+  <div id="loading">
+    <div class="ld-logo">Herencia Ancestral</div>
+    <div class="ld-title">Sala de Exposición</div>
+    <div class="ld-sub">Cargando obras de arte…</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="pf"></div>
+    </div>
+    <div class="progress-text" id="pt">0%</div>
+  </div>
+
+  <!-- ── Overlay de inicio / controles ─────────────── -->
+  <div id="start-overlay" class="hidden">
+    <div class="start-card">
+      <h2>🎨 Sala Virtual</h2>
+      <p>Haz clic en el botón para capturar el cursor y comenzar el recorrido en primera persona.</p>
+      <div class="controls-grid">
+        <div class="ctrl-item"><span class="key">W</span> Avanzar</div>
+        <div class="ctrl-item"><span class="key">S</span> Retroceder</div>
+        <div class="ctrl-item"><span class="key">A</span> Izquierda</div>
+        <div class="ctrl-item"><span class="key">D</span> Derecha</div>
+        <div class="ctrl-item"><span class="key">Mouse</span> Mirar</div>
+        <div class="ctrl-item"><span class="key">E</span> Ver obra</div>
+        <div class="ctrl-item"><span class="key">ESC</span> Pausar</div>
+      </div>
+      <button class="start-btn" id="start-btn">Entrar a la Sala</button>
+    </div>
+  </div>
+
+  <!-- ── Elementos HUD ──────────────────────────────── -->
+  <div id="esc-hint">Presiona ESC para salir del modo exploración</div>
+  <div id="crosshair"></div>
+  <div id="hover-hint" class="hidden">
+    <span class="key">E</span> Ver obra en detalle
+  </div>
+
+  <!-- ── Canvas Three.js ────────────────────────────── -->
+  <div id="canvas-container"></div>
+
+  <!-- ── Modal de detalle de pintura ────────────────── -->
+  <div id="painting-modal" class="hidden">
+    <div class="pm-backdrop"></div>
+    <div class="pm-card">
+      <button class="pm-close" aria-label="Cerrar">&times;</button>
+      <div class="pm-content">
+        <img id="pm-img" src="" alt="" />
+        <div class="pm-info">
+          <h3 id="pm-title"></h3>
+          <p id="pm-artist"></p>
+          <p id="pm-desc"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Error de GPU ───────────────────────────────── -->
+  <div id="ctx-lost">
+    <span>⚠️ Error de GPU — contexto WebGL perdido.</span>
+    <button onclick="location.reload()">Recargar página</button>
+  </div>
+
+  <!-- ── Import map (Three.js desde CDN) ───────────── -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- ── Punto de entrada de la aplicación ─────────── -->
+  <script type="module" src="js/main.js"></script>
+
+</body>
+
+</html>
