@@ -9,6 +9,7 @@
  * No importa Three.js — solo manipula el DOM.
  */
 import { isModalOpen } from './modal.js';
+import { isMobile, showMobileHUD, hideMobileHUD, isMobileMode } from './mobile.js';
 
 // ── Referencias al DOM ────────────────────────────────
 const pfEl = document.getElementById('pf');
@@ -51,27 +52,46 @@ export function tick() {
 
 /**
  * Conecta los controles FPS con la UI:
- *  • Botón "Entrar a la Sala" bloquea el cursor
+ *  • Botón "Entrar a la Sala" bloquea el cursor (desktop)
+ *    o activa el modo exploración (móvil)
  *  • Al bloquear: oculta overlay, activa crosshair/ESC hint
  *  • Al desbloquear: muestra overlay de nuevo
  *
  * @param {import('three/addons/controls/PointerLockControls.js').PointerLockControls} controls
  */
 export function initUI(controls) {
-  document.getElementById('start-btn').addEventListener('click', () => {
-    controls.lock();
-  });
+  const startBtn = document.getElementById('start-btn');
 
-  controls.addEventListener('lock', () => {
-    soEl.classList.add('hidden');
-    document.body.classList.add('locked');
-  });
+  if (isMobile) {
+    // ── Modo móvil: no usar PointerLock ───────────────
+    startBtn.addEventListener('click', () => {
+      soEl.classList.add('hidden');
+      document.body.classList.add('locked');
+      showMobileHUD();
+    });
 
-  controls.addEventListener('unlock', () => {
-    if (!isModalOpen()) {
-      soEl.classList.remove('hidden');
-    }
-    document.body.classList.remove('locked');
-    document.body.style.cursor = 'default';
-  });
+    // Re-entrar cuando se cierra el modal
+    window.addEventListener('painting-modal-close', () => {
+      document.body.classList.add('locked');
+      showMobileHUD();
+    });
+  } else {
+    // ── Modo escritorio: PointerLock normal ────────────
+    startBtn.addEventListener('click', () => {
+      controls.lock();
+    });
+
+    controls.addEventListener('lock', () => {
+      soEl.classList.add('hidden');
+      document.body.classList.add('locked');
+    });
+
+    controls.addEventListener('unlock', () => {
+      if (!isModalOpen()) {
+        soEl.classList.remove('hidden');
+      }
+      document.body.classList.remove('locked');
+      document.body.style.cursor = 'default';
+    });
+  }
 }

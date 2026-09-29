@@ -13,6 +13,7 @@ import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { camera, renderer } from './scene.js';
 import { HALF_W, HALF_D, SPEED, PLAYER_EYE_H, WALL_MARGIN } from './config.js';
+import { isMobile } from './mobile.js';
 import { paintingMeshes } from './paintings.js';
 import { openModal, isModalOpen } from './modal.js';
 import { textPanelMesh, linkY } from './textpanel.js';
@@ -133,6 +134,7 @@ const bounds = {
  * @param {number} dt - Delta time en segundos
  */
 export function updateMovement(dt) {
+  if (isMobile) return;
   if (!controls.isLocked) return;
 
   // Actualizar raycasting en cada frame

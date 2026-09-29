@@ -10,8 +10,9 @@
  *  2. room.js    — geometría estática (side-effects)
  *  3. lights.js  — iluminación (side-effects)
  *  4. paintings.js — cuadros + carga de texturas
- *  5. controls.js  — movimiento FPS
- *  6. ui.js        — overlay + barra de progreso
+ *  5. controls.js  — movimiento FPS (desktop)
+ *  6. mobile.js    — controles táctiles (móvil)
+ *  7. ui.js        — overlay + barra de progreso
  */
 import * as THREE from 'three';
 
@@ -26,19 +27,27 @@ import './textpanel.js';
 // Cuadros
 import { buildPaintings } from './paintings.js';
 
-// Controles FPS
+// Controles FPS (desktop)
 import { controls, updateMovement } from './controls.js';
+
+// Controles táctiles (móvil)
+import { isMobile, initMobile, updateMobileMovement, isMobileMode } from './mobile.js';
 
 // UI
 import { initUI } from './ui.js';
 
 // ── Inicialización ────────────────────────────────────
 
-// Añadir el objeto de la cámara del controlador a la escena
-scene.add(controls.getObject());
+// En modo escritorio, añadir el objeto del controlador a la escena
+if (!isMobile) {
+  scene.add(controls.getObject());
+}
 
 // Conectar UI con los controles (botón inicio, crosshair, etc.)
 initUI(controls);
+
+// Inicializar controles móviles si aplica
+initMobile();
 
 // Colocar cuadros e iniciar carga de imágenes
 buildPaintings();
@@ -52,7 +61,11 @@ function animate() {
   // Limitar delta para evitar saltos en frames lentos
   const dt = Math.min(clock.getDelta(), 0.05);
 
-  updateMovement(dt);
+  if (isMobileMode()) {
+    updateMobileMovement(dt);
+  } else {
+    updateMovement(dt);
+  }
 
   renderer.render(scene, camera);
 }
